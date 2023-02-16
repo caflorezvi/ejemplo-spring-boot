@@ -2,10 +2,12 @@ package co.edu.uniquindio.biblioteca.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,10 +20,13 @@ public class Libro {
 
     private String nombre;
 
-    private LocalDate fechaPublicacion;
+    private String genero;
 
-    public void imprimir(){
-        log.info("Hola, es un libro");
-    }
+    private int unidades;
+
+    @ManyToMany
+    private List<Autor> autor;
+
+    private LocalDate fechaPublicacion;
 
 }
