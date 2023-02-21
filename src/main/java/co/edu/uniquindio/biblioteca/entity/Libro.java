@@ -1,32 +1,37 @@
 package co.edu.uniquindio.biblioteca.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Data
-@Slf4j
-public class Libro {
+@Builder
+@AllArgsConstructor
+public class Libro implements Serializable {
 
     @Id
     private String isbn;
 
+    @Column(nullable = false)
     private String nombre;
 
-    private String genero;
+    @Column(nullable = false)
+    private Genero genero;
 
+    @Column(nullable = false)
     private int unidades;
+
+    @Column(nullable = false)
+    private LocalDate fechaPublicacion;
 
     @ManyToMany
     private List<Autor> autor;
-
-    private LocalDate fechaPublicacion;
 
 }

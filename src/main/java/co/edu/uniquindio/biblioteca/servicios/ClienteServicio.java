@@ -1,16 +1,13 @@
 package co.edu.uniquindio.biblioteca.servicios;
 
 import co.edu.uniquindio.biblioteca.dto.ClienteGet;
+import co.edu.uniquindio.biblioteca.dto.ClientePost;
 import co.edu.uniquindio.biblioteca.entity.Cliente;
 import co.edu.uniquindio.biblioteca.repo.ClienteRepo;
 import co.edu.uniquindio.biblioteca.servicios.excepciones.ClienteNoEncontradoException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,30 +16,27 @@ public class ClienteServicio {
 
     private final ClienteRepo clienteRepo;
 
-    public Cliente save(Cliente cliente){
-        return clienteRepo.save(cliente);
+    public ClienteGet save(ClientePost cliente){
+        return convertir( clienteRepo.save( convertir(cliente) ) );
     }
 
 
     public ClienteGet findById(Long codigoCliente){
-        Cliente cliente = clienteRepo.findById(codigoCliente).orElseThrow( () -> new ClienteNoEncontradoException("El cliente no existe") );
-
+        Cliente cliente = obtenerCliente(codigoCliente);
         return convertir(cliente);
     }
 
-    private ClienteGet convertir(Cliente cliente){
-        return new ClienteGet(cliente.getNombre(), cliente.getEmail(), cliente.getTelefono());
-    }
-
     public void delete(long codigoCliente){
-        clienteRepo.findById(codigoCliente).orElseThrow( () -> new ClienteNoEncontradoException("El cliente no existe") );
+        obtenerCliente(codigoCliente);
         clienteRepo.deleteById(codigoCliente);
     }
 
-    public Cliente update(long codigoCliente, Cliente clienteNuevo){
-        clienteRepo.findById(codigoCliente).orElseThrow( () -> new ClienteNoEncontradoException("El cliente no existe") );
-        //clienteNuevo.setCodigo(codigoCliente);
-        return clienteRepo.save(clienteNuevo);
+    public ClienteGet update(long codigoCliente, ClientePost clienteNuevo){
+        obtenerCliente(codigoCliente);
+
+        Cliente nuevo = convertir(clienteNuevo);
+        nuevo.setCodigo(codigoCliente);
+        return convertir( clienteRepo.save(nuevo) );
     }
 
     public List<ClienteGet> findAll(){
@@ -50,6 +44,22 @@ public class ClienteServicio {
                 .stream()
                 .map(c -> convertir(c))
                 .collect(Collectors.toList());
+    }
+
+    private Cliente obtenerCliente(Long codigoCliente){
+        return clienteRepo.findById(codigoCliente).orElseThrow( () -> new ClienteNoEncontradoException("El cliente no existe") );
+    }
+
+    private ClienteGet convertir(Cliente cliente){
+        return new ClienteGet(cliente.getCodigo(), cliente.getNombre(), cliente.getEmail(), cliente.getTelefono());
+    }
+
+    private Cliente convertir(ClientePost cliente){
+        return Cliente.builder()
+                .nombre(cliente.nombre())
+                .email(cliente.email())
+                .telefono(cliente.telefono())
+                .password(cliente.password()).build();
     }
 
 }
