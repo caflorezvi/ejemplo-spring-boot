@@ -50,11 +50,11 @@ public class LibroServicio {
 
         if(autores.size()!=libro.idAutores().size()){
 
+            List<Long> idsExistentes = autores.stream().map(Autor::getId).toList();
+
             String noEncontrados = libro.idAutores()
                     .stream()
-                    .filter(id -> !autores.stream()
-                                    .map(Autor::getId).toList()
-                                    .contains(id))
+                    .filter(id -> !idsExistentes.contains(id))
                     .map(Object::toString)
                     .collect(Collectors.joining(","));
 

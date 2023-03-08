@@ -4,6 +4,7 @@ import co.edu.uniquindio.biblioteca.dto.Respuesta;
 import co.edu.uniquindio.biblioteca.servicios.excepciones.AutorNoEncontradoException;
 import co.edu.uniquindio.biblioteca.servicios.excepciones.ClienteNoEncontradoException;
 import co.edu.uniquindio.biblioteca.servicios.excepciones.LibroNoEncontradoException;
+import co.edu.uniquindio.biblioteca.servicios.excepciones.PrestamoNoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,4 +33,8 @@ public class ManejoExcepciones {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body( new Respuesta<>(e.getMessage()) );
     }
 
+    @ExceptionHandler(PrestamoNoEncontradoException.class)
+    public ResponseEntity<Respuesta<String>> capturarPrestamoNoEncontradoException(PrestamoNoEncontradoException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body( new Respuesta<>(e.getMessage()) );
+    }
 }

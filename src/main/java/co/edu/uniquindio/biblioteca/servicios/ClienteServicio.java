@@ -1,7 +1,7 @@
 package co.edu.uniquindio.biblioteca.servicios;
 
-import co.edu.uniquindio.biblioteca.dto.ClienteGet;
-import co.edu.uniquindio.biblioteca.dto.ClientePost;
+import co.edu.uniquindio.biblioteca.dto.ClienteGetDTO;
+import co.edu.uniquindio.biblioteca.dto.ClientePostDTO;
 import co.edu.uniquindio.biblioteca.entity.Cliente;
 import co.edu.uniquindio.biblioteca.repo.ClienteRepo;
 import co.edu.uniquindio.biblioteca.servicios.excepciones.ClienteNoEncontradoException;
@@ -16,12 +16,12 @@ public class ClienteServicio {
 
     private final ClienteRepo clienteRepo;
 
-    public ClienteGet save(ClientePost cliente){
+    public ClienteGetDTO save(ClientePostDTO cliente){
         return convertir( clienteRepo.save( convertir(cliente) ) );
     }
 
 
-    public ClienteGet findById(Long codigoCliente){
+    public ClienteGetDTO findById(Long codigoCliente){
         Cliente cliente = obtenerCliente(codigoCliente);
         return convertir(cliente);
     }
@@ -31,7 +31,7 @@ public class ClienteServicio {
         clienteRepo.deleteById(codigoCliente);
     }
 
-    public ClienteGet update(long codigoCliente, ClientePost clienteNuevo){
+    public ClienteGetDTO update(long codigoCliente, ClientePostDTO clienteNuevo){
         obtenerCliente(codigoCliente);
 
         Cliente nuevo = convertir(clienteNuevo);
@@ -39,7 +39,7 @@ public class ClienteServicio {
         return convertir( clienteRepo.save(nuevo) );
     }
 
-    public List<ClienteGet> findAll(){
+    public List<ClienteGetDTO> findAll(){
         return clienteRepo.findAll()
                 .stream()
                 .map(c -> convertir(c))
@@ -50,11 +50,11 @@ public class ClienteServicio {
         return clienteRepo.findById(codigoCliente).orElseThrow( () -> new ClienteNoEncontradoException("El cliente no existe") );
     }
 
-    private ClienteGet convertir(Cliente cliente){
-        return new ClienteGet(cliente.getCodigo(), cliente.getNombre(), cliente.getEmail(), cliente.getTelefono());
+    private ClienteGetDTO convertir(Cliente cliente){
+        return new ClienteGetDTO(cliente.getCodigo(), cliente.getNombre(), cliente.getEmail(), cliente.getTelefono());
     }
 
-    private Cliente convertir(ClientePost cliente){
+    private Cliente convertir(ClientePostDTO cliente){
         return Cliente.builder()
                 .nombre(cliente.nombre())
                 .email(cliente.email())
