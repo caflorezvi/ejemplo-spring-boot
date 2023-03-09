@@ -1,1 +1,5 @@
 rootProject.name = 'biblioteca'
+include 'productos'
+include 'clientes'
+include 'prestamos'
+
